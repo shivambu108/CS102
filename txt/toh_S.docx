@@ -1,0 +1,60 @@
+//SHIVAMBU DEV PANDEY
+//23BCS123 
+//CSE B
+//LAB 
+//PROGRAM 
+//
+//
+
+/*
+Description:
+Three arrays represent the source, destination, and auxiliary rods. The top of each array represents the top disk on each rod.
+The push function adds disks to a rod, and the pop function removes them. Disks are represented as integers.
+The toh function implements the main logic. If there’s only one disk, it moves it from the source to the destination. Otherwise, it recursively 
+moves n-1 disks from the source to the auxiliary rod, moves the nth disk from the source to the destination, and finally moves the n-1 disks from the 
+auxiliary to the destination. The move_disk function moves a disk from one rod to another by popping it from the source and pushing it to the destination.
+This implementation effectively uses arrays to simulate the behavior of stacks, which are a key aspect of the Tower of Hanoi problem. Each move of a disk is a simple push and pop operation, and the entire problem is solved by making 
+the right sequence of these moves.
+
+*/
+
+
+#include <stdio.h>
+
+#define MAX_CAPACITY 100
+
+int src[MAX_CAPACITY], dest[MAX_CAPACITY], aux[MAX_CAPACITY];
+int top1 = -1, top2 = -1, top3 = -1;
+
+void push(int stack[], int* top, int item) {
+    stack[++(*top)] = item;
+}
+
+int pop(int stack[], int* top) {
+    return stack[(*top)--];
+}
+
+void move_disk(int source[], int* top1, int destination[], int* top2) {
+    int disk = pop(source, top1);
+    push(destination, top2, disk);
+}
+
+void toh(int n, int source[], int* top1, int destination[], int* top2, int auxiliary[], int* top3) {
+    if (n == 1) {
+        move_disk(source, top1, destination, top2);
+    } else {
+        toh(n-1, source, top1, auxiliary, top3, destination, top2);
+        move_disk(source, top1, destination, top2);
+        toh(n-1, auxiliary, top3, destination, top2, source, top1);
+    }
+}
+
+int main() {
+    unsigned num_of_disks = 3;
+
+    for (int i = num_of_disks; i >= 1; i--)
+        push(src, &top1, i);
+
+    toh(num_of_disks, src, &top1, dest, &top2, aux, &top3);
+    return 0;
+}

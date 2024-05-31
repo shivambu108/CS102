@@ -1,0 +1,65 @@
+//SHIVAMBU DEV PANDEY
+//23BCS123 
+//CSE B
+//LAB 
+//PROGRAM 
+
+/*
+Description:
+This program uses a stack data structure to reverse a given string.
+The program defines a stack of maximum size 100. It provides two operations on the stack: push and pop. The push operation is used to 
+insert a character into the stack, and the pop operation is used to remove a character from the stack.
+The main function of the program asks the user to enter a string. It then calls the reverseString function to reverse the string.
+The reverseString function pushes all characters of the string into the stack and then pops them out to reverse the string. The reversed 
+string is then printed to the console.
+
+
+*/
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 100
+
+int top = -1;
+char stack[MAX];
+
+void push(char c) {
+    if (top >= MAX - 1) {
+        printf("Stack Overflow. Unable to push '%c' into the stack.\n", c);
+        return;
+    }
+    stack[++top] = c;
+}
+
+char pop() {
+    if (top < 0) {
+        printf("Stack Underflow.\n");
+        return '\0';
+    }
+    return stack[top--];
+}
+
+void reverseString(char *str) {
+    int length = strlen(str);
+
+    for (int i = 0; i < length; i++) {
+        push(str[i]);
+    }
+
+    for (int i = 0; i < length; i++) {
+        str[i] = pop();
+    }
+}
+
+int main() {
+    char str[MAX];
+    printf("Enter a string: ");
+    scanf("%[^\n]s", str);
+
+    reverseString(str);
+
+    printf("Reversed string: %s\n", str);
+
+    return 0;
+}

@@ -1,0 +1,132 @@
+//SHIVAMBU DEV PANDEY
+//23BCS123 
+//CSE B
+//LAB 4
+//PROGRAM 2
+//08/02/2024
+//2.Write a C program to demonstrate the various operations of the double ended queue such as
+//insert_rear, insert_front, delete_rear, delete_front and display. The program should be menu driven.
+
+/*
+Descrition:
+This program implements a double ended queue with a maximum size of 5. It allows insertion and deletion of elements from 
+both ends (front and rear). The main function provides a menu for the user to choose an operation: insert at front, insert at rear, 
+delete from front, delete from rear, display the deque, or quit the program. The deque is implemented as an array, and overflow or 
+underflow conditions are handled with appropriate messages.
+
+*/
+
+#include<stdio.h>
+#include<stdlib.h>
+
+#define MAX 5
+
+int deque[MAX];
+int front=-1, rear=-1;
+
+void insert_front(int num) {
+    if(front == 0) {
+        printf("Deque Overflow\n");
+        return;
+    }
+    if(front == -1) {
+        front = rear = 0;
+    } else {
+        front = front - 1;
+    }
+    deque[front] = num;
+}
+
+void insert_rear(int num) {
+    if(rear == MAX-1) {
+        printf("Deque Overflow\n");
+        return;
+    }
+    if(front == -1) {
+        front = rear = 0;
+    } else {
+        rear = rear + 1;
+    }
+    deque[rear] = num;
+}
+
+void delete_front() {
+    int num;
+    if(front == -1) {
+        printf("Deque Underflow\n");
+        return;
+    }
+    num = deque[front];
+    if(front == rear) {
+        front = rear = -1;
+    } else {
+        front = front + 1;
+    }
+}
+
+void delete_rear() {
+    int num;
+    if(rear == -1) {
+        printf("Deque Underflow\n");
+        return;
+    }
+    num = deque[rear];
+    if(front == rear) {
+        front = rear = -1;
+    } else {
+        rear = rear - 1;
+    }
+}
+
+void display() {
+    int i;
+    if(front == -1) {
+        printf("Deque is empty\n");
+        return;
+    }
+    for(i=front; i<=rear; i++) {
+        printf("%d ",deque[i]);
+    }
+    printf("\n");
+}
+
+int main() {
+    int choice, num;
+    while(1) {
+        printf("1. Insert at front\n");
+        printf("2. Insert at rear\n");
+        printf("3. Delete from front\n");
+        printf("4. Delete from rear\n");
+        printf("5. Display\n");
+        printf("6. Quit\n");
+        printf("Enter your choice : ");
+        scanf("%d",&choice);
+
+        switch(choice) {
+            case 1:
+                printf("Enter the number to be inserted : ");
+                scanf("%d", &num);
+                insert_front(num);
+                break;
+            case 2:
+                printf("Enter the number to be inserted : ");
+                scanf("%d", &num);
+                insert_rear(num);
+                break;
+            case 3:
+                delete_front();
+                break;
+            case 4:
+                delete_rear();
+                break;
+            case 5:
+                display();
+                break;
+            case 6:
+                exit(1);
+            default:
+                printf("Invalid choice\n");
+        }
+    }
+    return 0;
+}

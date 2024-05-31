@@ -1,0 +1,123 @@
+//SHIVAMBU DEV PANDEY
+//23BCS123 
+//CSE B
+//LAB 
+//PROGRAM 
+
+/*
+Description:
+This program is based on the principles of stack operations and the precedence of operators. 
+When an infix expression is entered, the program starts scanning it from left to right. If the scanned character is an operand, 
+it is added directly to the postfix expression. If the scanned character is an operator, the program compares its precedence with the 
+operator at the top of the stack. If the precedence of the scanned operator is less than or equal to the operator at the top of the stack, 
+the stack operator is popped and added to the postfix expression. This process is repeated until the scanned operator has higher precedence 
+than the operator at the top of the stack. Then the scanned operator is pushed onto the stack.
+
+If the scanned character is an opening parenthesis '(', it is pushed onto the stack. If the scanned character is a closing parenthesis ')',
+all operators are popped from the stack and added to the postfix expression until an opening parenthesis '(' is encountered in the stack. 
+The opening parenthesis is then popped from the stack but not added to the postfix expression.
+
+This process continues until all characters in the infix expression have been scanned. After the entire infix expression is scanned, 
+all operators are popped from the stack and added to the postfix expression. The resulting postfix expression is then printed. 
+
+*/
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+ 
+#define MAX 100
+
+char stack[MAX];
+int top = -1;
+
+void push(char item) {
+    if(top >= MAX-1) {
+        printf("\nStack Overflow.");
+    } else {
+        stack[++top] = item;
+    }
+}
+
+char pop() {
+    char item;
+    if(top < 0) {
+        printf("Stack Underflow.");
+        exit(1);
+    } else {
+        item = stack[top--];
+        return(item);
+    }
+}
+
+int is_operator(char symbol) {
+    if(symbol == '^' || symbol == '*' || symbol == '/' || symbol == '+' || symbol =='-') {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+int precedence(char symbol) {
+    if(symbol == '^') {
+        return(3);
+    } else if(symbol == '*' || symbol == '/') {
+        return(2);
+    } else if(symbol == '+' || symbol == '-') {
+        return(1);
+    } else {
+        return(0);
+    }
+}
+
+void InfixToPostfix(char infix_exp[], char postfix_exp[]) {
+    int i, j;
+    char item;
+    char x;
+    push('(');
+    strcat(infix_exp, ")");
+    i=0;
+    j=0;
+    item=infix_exp[i];
+    while(item != '\0') {
+        if(item == '(') {
+            push(item);
+        } else if( isdigit(item) || isalpha(item)) {
+            postfix_exp[j] = item;
+            j++;
+        } else if(is_operator(item) == 1) {
+            x=pop();
+            while(is_operator(x) == 1 && ((precedence(x) > precedence(item)) || (precedence(x) == precedence(item) && item != '^'))) {
+                postfix_exp[j] = x;
+                j++;
+                x = pop();
+            }
+            push(x);
+            push(item);
+        } else if(item == ')') {
+            x = pop();
+            while(x != '(') {
+                postfix_exp[j] = x;
+                j++;
+                x = pop();
+            }
+        } else {
+            printf("\nInvalid infix Expression.\n");
+            exit(1);
+        }
+        i++;
+        item = infix_exp[i];
+    }
+    postfix_exp[j] = '\0';
+}
+
+int main() {
+    char infix[MAX], postfix[MAX];
+    printf("\nEnter Infix expression : ");
+    scanf("%[^\n]", infix);
+    InfixToPostfix(infix,postfix);
+    printf("Postfix Expression: %s\n", postfix);
+    return 0;
+}

@@ -1,0 +1,118 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct node {
+    int data;
+    struct node* next;
+} node;
+
+void traverse(node* head) {
+    int count = 1;
+    node* current = head;
+    while (current != NULL) {
+        printf("Node_%d _info: %d\n", count, current->data);
+        count++;
+        current = current->next;
+    }
+}
+
+void insert_end(node** head, int item) {
+    node* new_node = (node*)malloc(sizeof(node));
+    new_node->data = item;
+    new_node->next = NULL;
+
+    if (*head == NULL) {
+        *head = new_node;
+        return;
+    }
+
+    node* p = *head;
+    while (p->next != NULL) {
+        p = p->next;
+    }
+
+    p->next = new_node;
+}
+
+int search_by_position(node* head, int position) {
+    int count = 1;
+    node* current = head;
+
+    while (current != NULL) {
+        if (count == position) {
+            return current->data;
+        }
+        count++;
+        current = current->next;
+    }
+
+    return -1; // Element not found
+}
+
+int search_by_item(node* head, int item) {
+    int position = 1;
+    node* current = head;
+
+    while (current != NULL) {
+        if (current->data == item) {
+            return position;
+        }
+        position++;
+        current = current->next;
+    }
+
+    return -1; // Element not found
+}
+
+int main() {
+    node* head = NULL;
+    int choice, item, pos, searchPos, searchItem;
+
+    while (1) {
+        printf("\n\nLinked List Operations\n");
+        printf("1. Insert at end\n");
+        printf("2. Search by position\n");
+        printf("3. Search by item\n");
+        printf("4. Traverse\n");
+        printf("5. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter the item to be inserted: ");
+                scanf("%d", &item);
+                insert_end(&head, item);
+                break;
+            case 2:
+                printf("Enter the position to search: ");
+                scanf("%d", &searchPos);
+                pos = search_by_position(head, searchPos);
+                if (pos != -1) {
+                    printf("Item at position %d: %d\n", searchPos, pos);
+                } else {
+                    printf("Element not found at position %d\n", searchPos);
+                }
+                break;
+            case 3:
+                printf("Enter the item to search: ");
+                scanf("%d", &searchItem);
+                pos = search_by_item(head, searchItem);
+                if (pos != -1) {
+                    printf("Item %d found at position %d\n", searchItem, pos);
+                } else {
+                    printf("Item %d not found in the list\n", searchItem);
+                }
+                break;
+            case 4:
+                traverse(head);
+                break;
+            case 5:
+                exit(0);
+            default:
+                printf("Invalid choice\n");
+        }
+    }
+
+    return 0;
+}

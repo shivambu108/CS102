@@ -1,0 +1,95 @@
+//SHIVAMBU DEV PANDEY
+//23BCS123 
+//CSE B
+//LAB 
+//PROGRAM 
+
+/*
+Description:
+This program is based on the principles of stack operations and the properties of prefix expressions.
+When a prefix expression is entered, the program starts scanning it from right to left. If the scanned character is a digit, 
+it is converted to an integer and pushed onto the stack. If the scanned character is an operator, two operands are popped from the stack, 
+and the operation is performed. The result of the operation is then pushed back onto the stack.
+This process continues until all characters in the prefix expression have been scanned. After the entire prefix expression is scanned, 
+the final value of the expression is the only element left in the stack, which is then popped and printed.
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
+
+#define MAX 100
+
+int stack[MAX];
+int top = -1;
+
+void push(int item) {
+    if(top >= MAX-1) {
+        printf("\nStack Overflow.\n");
+    } else {
+        stack[++top] = item;
+    }
+}
+
+int pop() {
+    if(top < 0) {
+        printf("Stack Underflow.\n");
+        exit(1);
+    } else {
+        return stack[top--];
+    }
+}
+
+void evaluatePrefix(char* exp) {
+    int i, num, op1, op2, value;
+    int length = strlen(exp);
+
+    for(i = length - 1; i >= 0; i--) {
+        if(exp[i] == ' ') continue; // Skip spaces
+
+        if(isdigit(exp[i])) {
+            num = 0;
+            int power = 1;
+            while(i >= 0 && isdigit(exp[i])) {
+                num += (exp[i] - '0') * power;
+                power *= 10;
+                i--;
+            }
+            i++; // Adjust for overshoot in the loop
+            push(num);
+        } else if(exp[i] == '+' || exp[i] == '-' || exp[i] == '*' || exp[i] == '/') {
+            op1 = pop();
+            op2 = pop();
+
+            switch(exp[i]) {
+                case '+': value = op1 + op2; break;
+                case '-': value = op1 - op2; break;
+                case '*': value = op1 * op2; break;
+                case '/': 
+                    if(op2 == 0) {
+                        printf("Error: Division by zero.\n");
+                        exit(1);
+                    }
+                    value = op1 / op2; 
+                    break;
+            }
+
+            push(value);
+        }
+    }
+
+    printf("\nValue of prefix expression: %d\n", pop());
+}
+
+int main() {
+    char exp[MAX];
+
+    printf("Enter a prefix expression: ");
+    fgets(exp, MAX, stdin);
+    exp[strcspn(exp, "\n")] = 0; // Remove newline character
+
+    evaluatePrefix(exp);
+
+    return 0;
+}

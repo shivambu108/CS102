@@ -1,0 +1,78 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+Node* createNode(int data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    if (newNode == NULL) {
+        printf("Memory allocation error\n");
+        exit(EXIT_FAILURE);
+    }
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+void insertNode(Node** head, int data) {
+    Node* newNode = createNode(data);
+    newNode->next = *head;
+    *head = newNode;
+}
+
+void displayList(Node* head) {
+    while (head != NULL) {
+        printf("%d ", head->data);
+        head = head->next;
+    }
+    printf("\n");
+}
+
+Node* reverseList(Node* head) {
+    Node* current = head;
+    Node* prev = NULL;
+    Node* next = NULL;
+
+    while (current != NULL) {
+        next = current->next; // Save the next node
+        current->next = prev; // Reverse the link
+        prev = current;       // Move to the next nodes
+        current = next;
+    }
+
+    return prev; // New head of the reversed list
+}
+
+int main() {
+    Node* head = NULL;
+    int n, data;
+
+    printf("Enter the number of elements in the linked list: ");
+    scanf("%d", &n);
+
+    printf("Enter the elements of the linked list: ");
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &data);
+        insertNode(&head, data);
+    }
+
+    printf("Original linked list: ");
+    displayList(head);
+
+    head = reverseList(head);
+
+    printf("Reversed linked list: ");
+    displayList(head);
+
+    // Free memory
+    while (head != NULL) {
+        Node* temp = head;
+        head = head->next;
+        free(temp);
+    }
+
+    return 0;
+}

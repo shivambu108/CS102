@@ -1,0 +1,128 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct node {
+    int data;
+    struct node* next;
+} node;
+
+node* getLastNode(node* head) {
+    if (head == NULL) {
+        return NULL;
+    }
+    node* last = head;
+    while (last->next != head) {
+        last = last->next;
+    }
+    return last;
+}
+
+void traverse(node* head) {
+    int count = 1;
+    node* p = head;
+    if (head == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+    do {
+        printf("\nNode_%d _info: %d", count, p->data);
+        count++;
+        p = p->next;
+    } while (p != head);
+}
+
+void insert_end(node** head, int item) {
+    node* new_node = (node*)malloc(sizeof(node));
+    new_node->data = item;
+    if (*head == NULL) {
+        new_node->next = new_node; // point to itself in a circular list
+        *head = new_node;
+    } else {
+        new_node->next = (*head)->next;
+        (*head)->next = new_node;
+        *head = new_node;
+    }
+}
+
+int search_by_position(node* head, int position) {
+    int count = 1;
+    node* current = head;
+
+    do {
+        if (count == position) {
+            return current->data;
+        }
+        count++;
+        current = current->next;
+    } while (current != head);
+
+    return -1; // Element not found
+}
+
+int search_by_item(node* head, int item) {
+    int position = 1;
+    node* current = head;
+
+    do {
+        if (current->data == item) {
+            return position;
+        }
+        position++;
+        current = current->next;
+    } while (current != head);
+
+    return -1; // Element not found
+}
+
+int main() {
+    node* head = NULL;
+    int choice, item, pos, searchPos, searchItem;
+
+    while (1) {
+        printf("\n\nCircular Linked List Operations\n");
+        printf("1. Insert at end\n");
+        printf("2. Search by position\n");
+        printf("3. Search by item\n");
+        printf("4. Traverse\n");
+        printf("5. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter the item to be inserted: ");
+                scanf("%d", &item);
+                insert_end(&head, item);
+                break;
+            case 2:
+                printf("Enter the position to search: ");
+                scanf("%d", &searchPos);
+                pos = search_by_position(head, searchPos);
+                if (pos != -1) {
+                    printf("Item at position %d: %d\n", searchPos, pos);
+                } else {
+                    printf("Element not found at position %d\n", searchPos);
+                }
+                break;
+            case 3:
+                printf("Enter the item to search: ");
+                scanf("%d", &searchItem);
+                pos = search_by_item(head, searchItem);
+                if (pos != -1) {
+                    printf("Item %d found at position %d\n", searchItem, pos);
+                } else {
+                    printf("Item %d not found in the list\n", searchItem);
+                }
+                break;
+            case 4:
+                traverse(head);
+                break;
+            case 5:
+                exit(0);
+            default:
+                printf("Invalid choice\n");
+        }
+    }
+
+    return 0;
+}

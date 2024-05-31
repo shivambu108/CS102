@@ -1,0 +1,98 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Node {
+    char data;
+    struct Node* next;
+} Node;
+
+Node* createNode(char data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    if (newNode == NULL) {
+        printf("Memory allocation error\n");
+        exit(EXIT_FAILURE);
+    }
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+void insertNode(Node** head, char data) {
+    Node* newNode = createNode(data);
+    newNode->next = *head;
+    *head = newNode;
+}
+
+int isPalindrome(Node* head) {
+    Node* slow = head;
+    Node* fast = head;
+    Node* prev = NULL;
+
+    // Find the middle of the linked list
+    while (fast != NULL && fast->next != NULL) {
+        fast = fast->next->next;
+
+        // Reverse the first half of the linked list
+        Node* temp = slow->next;
+        slow->next = prev;
+        prev = slow;
+        slow = temp;
+    }
+
+    // If the length of the linked list is odd, move to the next node
+    if (fast != NULL) {
+        slow = slow->next;
+    }
+
+    // Compare the first half (reversed) with the second half
+    while (slow != NULL) {
+        if (prev->data != slow->data) {
+            return 0; // Not a palindrome
+        }
+        slow = slow->next;
+        prev = prev->next;
+    }
+
+    return 1; // Palindrome
+}
+
+void displayList(Node* head) {
+    while (head != NULL) {
+        printf("%c", head->data);
+        head = head->next;
+    }
+    printf("\n");
+}
+
+int main() {
+    Node* head = NULL;
+    char input[100];
+
+    printf("Enter a string: ");
+    fgets(input, sizeof(input), stdin);
+    input[strcspn(input, "\n")] = '\0'; // Remove the newline character from the input
+
+    // Create a linked list from the input string
+    for (int i = 0; i < strlen(input); i++) {
+        insertNode(&head, input[i]);
+    }
+
+    printf("Entered string: ");
+    displayList(head);
+
+    if (isPalindrome(head)) {
+        printf("The entered string is a palindrome.\n");
+    } else {
+        printf("The entered string is not a palindrome.\n");
+    }
+
+    // Free memory
+    while (head != NULL) {
+        Node* temp = head;
+        head = head->next;
+        free(temp);
+    }
+
+    return 0;
+}
